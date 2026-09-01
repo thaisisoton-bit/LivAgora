@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LivAgora Admin — Global Configuration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ overflow-x:hidden; }
+  :root{
+    --cream: #FBF2E6;
+    --cream-soft: #FCF6EC;
+    --ink: #0D1B24;
+    --navy: #0F1F2B;
+    --navy-2: #0A161F;
+    --gold: #6E7F5C;
+    --line: #E7DCC9;
+    --muted: #6B6459;
+    --white: #FFFFFF;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --green: #3D7A52;
+    --green-bg: #E7F1E9;
+    --red: #9C3B2E;
+    --red-bg: #FBEAE6;
+    --amber: #B5654A;
+    --amber-bg: #F5E4DD;
+    --blue: #33507A;
+    --blue-bg: #E3E9F1;
+    --lime: #C3D62E;
+    --lime-bg: #F2F6D9;
+    --lime-ink: #5B6614;
+  }
+  body{ font-family:'Inter', sans-serif; background:#F7F7F8; color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  .serif{ font-family:'Fraunces', serif; }
+  a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; border:none; background:none; cursor:pointer; }
+  input, select, textarea{ font-family:inherit; }
+  img{ max-width:100%; display:block; }
+
+  /* ── Shell — deliberately distinct from the hotel Partners shell: a
+       solid navy sidebar instead of cream/white, and no property card,
+       since this admin isn't scoped to any one hotel. ── */
+  .admin-shell{ display:grid; grid-template-columns:250px 1fr; min-height:100vh; }
+  @media (max-width:680px){ .admin-shell{ grid-template-columns:1fr; } }
+  .admin-sidebar{
+    background:var(--navy); color:rgba(255,255,255,.7); padding:26px 18px; position:sticky; top:0; height:100vh; min-width:0;
+  }
+  @media (max-width:680px){ .admin-sidebar{ position:relative; height:auto; } }
+  .admin-sidebar .logo{ font-family:'Fraunces', serif; font-size:17px; color:#fff; font-weight:500; padding:0 10px; margin-bottom:6px; }
+  .admin-sidebar .logo span{ font-family:'Inter',sans-serif; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--lime); margin-left:6px; }
+  .admin-sidebar .logo-sub{ font-size:11px; color:rgba(255,255,255,.45); padding:0 10px; margin-bottom:26px; }
+  .admin-nav-list{ display:flex; flex-direction:column; gap:2px; }
+  .admin-nav-list a{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; font-size:13.5px; font-weight:500;
+    color:rgba(255,255,255,.65); transition:background .15s ease, color .15s ease;
+  }
+  .admin-nav-list a:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .admin-nav-list a.active{ background:rgba(195,214,46,.14); color:var(--lime); font-weight:600; }
+  .admin-nav-list a .ic{ display:flex; flex-shrink:0; }
+  .admin-nav-list a .soon{ font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:rgba(255,255,255,.35); margin-left:auto; }
+  .admin-sidebar-foot{ border-top:1px solid rgba(255,255,255,.1); padding-top:16px; margin-top:20px; }
+  .admin-logout{
+    display:flex; align-items:center; gap:8px; width:100%; padding:9px 12px; border-radius:10px; font-size:13px; font-weight:600;
+    color:rgba(255,255,255,.55);
+  }
+  .admin-logout:hover{ background:rgba(255,255,255,.06); color:#fff; }
+
+  .admin-main{ padding:28px 36px 60px; max-width:1200px; min-width:0; }
+  @media (max-width:600px){ .admin-main{ padding:20px 18px 40px; } }
+  .admin-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:16px; flex-wrap:wrap; }
+  .admin-topbar h1{ font-size:24px; font-weight:500; }
+  .admin-scope-note{
+    display:inline-flex; align-items:center; gap:7px; font-size:11.5px; font-weight:600; color:var(--blue);
+    background:var(--blue-bg); padding:6px 12px; border-radius:100px; margin-bottom:24px;
+  }
+  .welcome-sub{ font-size:13px; color:var(--muted); margin-top:3px; }
+  .topbar-profile{ display:flex; align-items:center; gap:10px; }
+  .topbar-profile .tp-text{ text-align:right; }
+  .topbar-profile .tp-text b{ display:block; font-size:13px; font-weight:600; }
+  .topbar-profile .tp-text span{ font-size:11.5px; color:var(--muted); }
+  .staff-avatar{
+    width:36px; height:36px; border-radius:100px; background:var(--navy); color:#fff; display:flex; align-items:center;
+    justify-content:center; font-size:12.5px; font-weight:700; flex-shrink:0;
+  }
+
+  .staff-section{ background:#fff; border-radius:var(--radius-lg); padding:24px; box-shadow:0 1px 2px rgba(15,31,43,.04), 0 12px 28px -10px rgba(15,31,43,.08); margin-bottom:20px; }
+  .staff-section-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+  .staff-section-head h2{ font-size:16.5px; font-weight:600; }
+  .staff-section-sub{ font-size:12.5px; color:var(--muted); margin-top:-12px; margin-bottom:18px; }
+
+  .pm-input{
+    width:100%; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:13.5px;
+    color:var(--ink); outline:none; background:#fff; transition:border-color .15s ease;
+  }
+  .pm-input:focus{ border-color:var(--navy); }
+  .pm-label{ display:block; font-size:12px; font-weight:700; color:var(--ink); margin-bottom:7px; }
+  .pm-label-sub{ font-weight:400; color:var(--muted); font-size:11px; margin-left:4px; }
+
+  .pill-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--navy); color:#fff; padding:11px 20px; border-radius:100px;
+    font-size:13px; font-weight:600; white-space:nowrap;
+  }
+  .pill-btn:hover{ background:var(--navy-2); }
+  .pill-btn-outline{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-size:12.5px; font-weight:600; color:var(--navy); padding:10px 16px; border:1px solid var(--navy); border-radius:100px;
+    white-space:nowrap;
+  }
+  .pill-btn-outline:hover{ background:var(--navy); color:#fff; }
+
+  .category-row{ display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .category-row:last-child{ border-bottom:none; }
+  .category-row .cat-drag{ color:var(--line); flex-shrink:0; cursor:grab; }
+  .category-row .cat-name-input{ flex:1; }
+  .category-row .cat-remove-btn{ color:var(--muted); flex-shrink:0; }
+  .category-row .cat-remove-btn:hover{ color:var(--red); }
+  .category-empty-tag{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--amber); background:var(--amber-bg); padding:3px 9px; border-radius:100px; flex-shrink:0; }
+
+  .settings-save-row{ display:flex; justify-content:flex-end; margin-top:4px; gap:10px; align-items:center; }
+  .save-status{ font-size:12px; color:var(--muted); }
+
+  .chart-toast{
+    position:fixed; bottom:28px; left:50%; transform:translate(-50%, 20px); background:var(--navy); color:#fff;
+    font-size:13px; font-weight:600; padding:12px 20px; border-radius:100px; box-shadow:0 14px 34px rgba(15,31,43,.28);
+    z-index:300; opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; display:flex; align-items:center; gap:8px;
+  }
+  .chart-toast.show{ opacity:1; transform:translate(-50%, 0); pointer-events:auto; }
+</style>
+</head>
+<body>
+
+  <div class="admin-shell">
+    <nav class="admin-sidebar">
+      <div class="logo">Livagora <span>Admin</span></div>
+      <div class="logo-sub">Platform-wide configuration</div>
+
+      <div class="admin-nav-list">
+        <a href="#" class="active">
+          <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9 12 2"/></svg></span>
+          Review Categories
+        </a>
+        <a href="#" style="pointer-events:none; opacity:.5;">
+          <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+          Fee &amp; Payout Rules <span class="soon">Soon</span>
+        </a>
+        <a href="#" style="pointer-events:none; opacity:.5;">
+          <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h4M2 15h4M18 9h4M18 15h4"/></svg></span>
+          Cancellation Policies <span class="soon">Soon</span>
+        </a>
+        <a href="#" style="pointer-events:none; opacity:.5;">
+          <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+          Partner Properties <span class="soon">Soon</span>
+        </a>
+      </div>
+
+      <div class="admin-sidebar-foot">
+        <button class="admin-logout" id="adminLogoutBtn">
+          <span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+          Log Out
+        </button>
+      </div>
+    </nav>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <h1 class="serif">Review Categories</h1>
+          <p class="welcome-sub">Applies to every property on Livagora — hotels can't add or remove these themselves.</p>
+        </div>
+        <div class="topbar-profile">
+          <div class="tp-text">
+            <b id="tpName">—</b>
+            <span>LivAgora Staff</span>
+          </div>
+          <div class="staff-avatar" id="staffAvatar">—</div>
+        </div>
+      </div>
+      <div class="admin-scope-note">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><circle cx="12" cy="8" r=".5" fill="currentColor"/></svg>
+        Changes here affect the Reviews page for every hotel partner, immediately.
+      </div>
+
+      <div class="staff-section">
+        <div class="staff-section-head">
+          <div>
+            <h2>Categories guests rate</h2>
+          </div>
+          <button class="pill-btn-outline" id="addCategoryBtn">+ Add Category</button>
+        </div>
+        <p class="staff-section-sub">These are the categories shown under every property's star rating — on the guest listing page and on the hotel's own Reviews tab. Order here is the order guests see when rating.</p>
+        <div id="categoryList"></div>
+
+        <div class="settings-save-row">
+          <span class="save-status" id="saveStatus"></span>
+          <button class="pill-btn" id="saveCategoriesBtn">Save &amp; Publish</button>
+        </div>
+      </div>
+
+      <div class="staff-section">
+        <div class="staff-section-head">
+          <h2>Preview — hotel-facing Reviews tab</h2>
+        </div>
+        <p class="staff-section-sub">This is what "By Category" looks like on a property's Reviews page right now, using live sample scores.</p>
+        <div id="categoryPreview"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="chart-toast" id="chartToast">
+    <span id="chartToastText"></span>
+  </div>
+
+  <script>
+    const ADMIN_SESSION_KEY = 'livagoraAdminSession';
+    function getAdminSession(){
+      try {
+        let s = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY) || 'null');
+        if(!s) s = { name: 'Rafael Souza' };
+        return s;
+      } catch(e){ return { name: 'Rafael Souza' }; }
+    }
+    const adminSession = getAdminSession();
+    document.getElementById('tpName').textContent = adminSession.name;
+    document.getElementById('staffAvatar').textContent = adminSession.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+      try { localStorage.removeItem(ADMIN_SESSION_KEY); } catch(e){}
+      showToast('Logged out');
+    });
+
+    function showToast(text){
+      const toast = document.getElementById('chartToast');
+      document.getElementById('chartToastText').textContent = text;
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    // ═══════════════════════ GLOBAL CONFIG (shared with every hotel) ═══════════════════════
+    // Stored under one shared key so every property's Reviews page reads
+    // the exact same list — this is the single source of truth, not
+    // something an individual hotel's Admin can edit from Settings.
+    const GLOBAL_CONFIG_KEY = 'livagoraGlobalConfig';
+    const DEFAULT_CATEGORIES = ['Cleanliness', 'Accuracy', 'Check-in', 'Value'];
+    // Sample scores used only to render the live preview below — a real
+    // property's actual per-category scores live with that property's
+    // review data, not in this global config.
+    const PREVIEW_SCORES = { 'Cleanliness': 4.9, 'Accuracy': 5.0, 'Check-in': 5.0, 'Value': 4.7 };
+
+    function loadGlobalConfig(){
+      try {
+        const raw = JSON.parse(localStorage.getItem(GLOBAL_CONFIG_KEY) || 'null');
+        if(raw && Array.isArray(raw.reviewCategories) && raw.reviewCategories.length) return raw;
+      } catch(e){}
+      return { reviewCategories: [...DEFAULT_CATEGORIES] };
+    }
+    function saveGlobalConfig(config){
+      localStorage.setItem(GLOBAL_CONFIG_KEY, JSON.stringify(config));
+    }
+
+    let workingCategories = [...loadGlobalConfig().reviewCategories];
+
+    function renderCategoryList(){
+      document.getElementById('categoryList').innerHTML = workingCategories.map((cat, i) => `
+        <div class="category-row">
+          <span class="cat-drag" title="Reorder">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+          </span>
+          <input type="text" class="pm-input cat-name-input" data-cat-index="${i}" value="${cat}" maxlength="24">
+          <button class="cat-remove-btn" data-remove-cat="${i}" aria-label="Remove category">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      `).join('');
+      document.querySelectorAll('[data-cat-index]').forEach(input => {
+        input.addEventListener('input', () => {
+          workingCategories[parseInt(input.dataset.catIndex, 10)] = input.value;
+          renderCategoryPreview();
+        });
+      });
+      document.querySelectorAll('[data-remove-cat]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.dataset.removeCat, 10);
+          if(workingCategories.length <= 1){ showToast('At least one category is required'); return; }
+          workingCategories.splice(i, 1);
+          renderCategoryList();
+          renderCategoryPreview();
+        });
+      });
+    }
+
+    function renderCategoryPreview(){
+      document.getElementById('categoryPreview').innerHTML = workingCategories.map(cat => {
+        const score = PREVIEW_SCORES[cat] || (3.5 + Math.random() * 1.4).toFixed(1);
+        const pct = (score / 5 * 100).toFixed(0);
+        return `
+          <div style="display:flex; align-items:center; gap:10px; font-size:12.5px; padding:8px 0;">
+            <span style="width:100px; flex-shrink:0; color:var(--muted);">${cat || '(unnamed)'}</span>
+            <div style="flex:1; height:6px; background:var(--cream-soft); border-radius:100px; overflow:hidden;"><div style="height:100%; width:${pct}%; background:var(--amber); border-radius:100px;"></div></div>
+            <span style="width:28px; text-align:right; font-weight:700;">${Number(score).toFixed(1)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('addCategoryBtn').addEventListener('click', () => {
+      workingCategories.push('New Category');
+      renderCategoryList();
+      renderCategoryPreview();
+    });
+
+    document.getElementById('saveCategoriesBtn').addEventListener('click', () => {
+      const cleaned = workingCategories.map(c => c.trim()).filter(Boolean);
+      if(!cleaned.length){ showToast('Add at least one category before publishing'); return; }
+      workingCategories = cleaned;
+      saveGlobalConfig({ reviewCategories: workingCategories });
+      renderCategoryList();
+      renderCategoryPreview();
+      document.getElementById('saveStatus').textContent = `Published just now — live on every property's Reviews page`;
+      showToast('Review categories published to all properties');
+    });
+
+    renderCategoryList();
+    renderCategoryPreview();
+  </script>
+</body>
+</html>
